@@ -1,0 +1,40 @@
+{ 
+	"name" : "netasq-log",
+	"description": "Log tools NETASQ security appliances",
+	"version" : "0.1.0",
+	"author" : "Sebastien Dolard",
+	"email" : "sdolard@gmail.com",
+	"keywords" : ["netasq", "log"],
+	"url" : "http://github.com/sdolard/node-netasq-log/",
+	"bin" : { 
+		"nncli" : "./bin/nncli.js" 
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sdolard/node-netasq-log.git"
+	},
+	"main" : "lib/netasq-log",
+	"license" : "MIT",
+	"scripts" : { 
+		"test" : "node test/run_test.js" 
+	},
+	"dependencies": {
+		//"sax": "0.2.x",
+		//"prompt": "0.1.x",
+		"posix-getopt": "0.0.x"
+	},
+	"engines": {
+		"node": ">= 0.4.0"
+	}, 
+	"bugs" :
+	{ 
+		"web" : "https://github.com/sdolard/node-netasq-log/issues"
+	}, 
+	"licenses" : [
+		{ 
+			"type" : "MIT", 
+			"url" : "https://raw.github.com/sdolard/node-netasq-log/master/LICENSE"
+		}
+	]
+}
+
