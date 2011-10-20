@@ -19,8 +19,7 @@
 		"test" : "node test/run_test.js" 
 	},
 	"dependencies": {
-		//"sax": "0.2.x",
-		//"prompt": "0.1.x",
+		"pkginfo": "0.2.x",
 		"posix-getopt": "0.0.x"
 	},
 	"engines": {

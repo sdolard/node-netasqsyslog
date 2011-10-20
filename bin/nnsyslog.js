@@ -26,10 +26,12 @@ var
 * requirements
 */
 util = require('util'),
-netasqLog = require('../lib/log'),
 getopt = require('posix-getopt'), // contrib
-syslog = netasqLog.createSyslog(),
-optParser, opt;
+libSyslog = require('../lib/syslog'),
+optParser, opt, syslog, 
+config = {
+	directory: __dirname
+};
 
 
 /**
@@ -47,23 +49,26 @@ process.on('uncaughtException', function (exception) {
 * Display help
 */
 function displayHelp() {
-	console.log('nnsyslog –a address [-p port] [–v] [–h]');
-	console.log('NETASQ Node Syslog.');
+	console.log('nnsyslog –a address -d directory [-p port] [–v] [–h] [-r regex]');
+	console.log('NETASQ Node Syslog %s', libSyslog.version);
 	console.log('Options:');
 	console.log('  v: enable verbose');
 	console.log('  h: display this help');
 	console.log('  a: firewall address');
+	console.log('  d: log directory');
 	console.log('  p: port');
+	console.log('  r: regular expression');
+	console.log('Issues: %s', libSyslog.bugs.web);
 }
 
 /**
 * Command line options
 */
-optParser = new getopt.BasicParser(':hva:p:', process.argv);
+optParser = new getopt.BasicParser(':hva:p:r:d:', process.argv);
 while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	switch(opt.option) {
 	case 'v': // verbose
-		syslog.verbose = true;
+		config.verbose = true;
 		break;
 		
 	case 'h': // help
@@ -71,14 +76,20 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 		return;
 		
 	case 'a': // srcAddress
-		syslog.srcAddress = opt.optarg;
+		config.srcAddress = opt.optarg;
 		break;
 		
+	case 'd': // log directory
+		config.directory = opt.optarg;
+		break;
 		
 	case 'p': // port
-		syslog.port = opt.optarg;
+		config.port = opt.optarg;
 		break;
-
+		
+	case 'r': // regular expression
+		config.regGrep = new RegExp(opt.optarg);
+		break;
 		
 	default:
 		console.log('Invalid or incomplete option');
@@ -87,11 +98,27 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	}
 }
 
+if(!config.srcAddress) {
+	console.log('A firewall address is mandatory!');
+	displayHelp();
+	process.exit(1);
+}
+
+
+if(!config.directory) {
+	console.log('A directory is mandatory!');
+	displayHelp();
+	process.exit(1);
+}
+
+
 /**
 * Verbose mode
 */
-if (syslog.verbose) {
+if (config.verbose) {
 	console.log('Verbose enabled');
 }
+
+syslog = libSyslog.create(config);
 
 syslog.start();

@@ -28,12 +28,11 @@ nncli (bin) will be only available with global (-g) option.
 ```
 
 ### Examples
-* bin/nnsysylog.js
+* bin/nnsyslog.js
 
 ## Exports 
 
 ## Known issues
-* Limited to NETASQ V9+ firmware (http(s), SRP is not supported)
 
 
 ## Test
