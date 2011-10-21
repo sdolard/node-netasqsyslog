@@ -117,6 +117,7 @@ syslog = libSyslog.create(config);
 
 syslog.on('error', function(exception) {
 		if (exception.code === "EACCESS") {
+			console.log('%s (%s)', exception.message, exception.code);
 			process.exit(1);
 		}
 });

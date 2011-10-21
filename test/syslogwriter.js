@@ -36,43 +36,40 @@ dataResultB = [
 	'proto=dns src=10.2.52.1 srcport=55765 srcportname=ephemeral_fw_udp dst=10.0.0.124 ',
 	'dstport=53 dstportname=domain_udp dstname=jupiter.netasq.com modsrc=10.2.52.1 ',
 	'modsrcport=55765 origdst=10.0.0.124 origdstport=53 sent=50 rcvd=89 duration=0.00\r\n'
-].join('');
-
-try {
-	var writer = syslogwriter.create({
-			verbose: false
-	});
-} catch(err) {
-	if (err.code !== 'EDIRNOTFOUND') { 
-		throw err;
-	}
-}
-
+].join(''),
 writer = syslogwriter.create({
-		//verbose: true,
-		directory: __dirname
-});
+		directory: __dirname,
+		verbose: false
+}),
+writtingEvent = false,
+writtenTmp = false,
+writtenAlarm = false;
+
 
 writer.on('writting', function() {
-		//console.log('writting');
+		writtingEvent = true;
 });
 
 writer.on('written', function() {
-		//console.log('written');
-		// Clean up
 		fs.unlink(__dirname + '/l_tmp' , function (err) {
 				if (err) {
 					throw err;
 				}
+				writtenTmp = true;
 				fs.unlink(__dirname + '/l_alarm', function (err) {
 						if (err) {
 							throw err;
 						}
-						//console.log('All done!');
+						writtenAlarm = true;
 				});
 		});
 });
 
-
 writer.write(dataTestA);
 writer.write(dataTestB);
+
+process.on('exit', function () {
+		assert.strictEqual(writtingEvent, true, 'writtingEvent done');
+		assert.strictEqual(writtenTmp, true, 'writtingEvent done');
+		assert.strictEqual(writtenAlarm, true, 'writtingEvent done');
+});
