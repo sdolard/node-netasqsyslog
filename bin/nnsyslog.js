@@ -31,15 +31,10 @@ libSyslog = require('../lib/syslog'),
 optParser, opt, syslog, 
 config = {};
 
-console.log('node version: %s', process.version);
-
 /**
 * Uncaught exception 
 */
 process.on('uncaughtException', function (exception) {
-		if (exception.code === "EACCES" || exception.code === "EACCESS") { // node V4/V5 compat 
-			process.exit(1);
-		}
 		console.error('Process uncaught exception: ', exception.message);
 });
 
@@ -48,7 +43,7 @@ process.on('uncaughtException', function (exception) {
 * Display help
 */
 function displayHelp() {
-	console.log('nnsyslog –a address -d directory [-p port] [–v] [–h]');
+	console.log('nnsyslog –a address -d directory [-p port] [–v] [–h] [–6]');
 	console.log('NETASQ Node Syslog %s', libSyslog.version);
 	console.log('Options:');
 	console.log('  v: enable verbose');
@@ -56,13 +51,14 @@ function displayHelp() {
 	console.log('  a: firewall address');
 	console.log('  d: log directory');
 	console.log('  p: port');
+	console.log('  6: Ip V6');
 	console.log('Issues: %s', libSyslog.bugs.web);
 }
 
 /**
 * Command line options
 */
-optParser = new getopt.BasicParser(':hva:p:r:d:', process.argv);
+optParser = new getopt.BasicParser(':hv6a:p:r:d:', process.argv);
 while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	switch(opt.option) {
 	case 'v': // verbose
@@ -83,6 +79,10 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 		
 	case 'p': // port
 		config.port = opt.optarg;
+		break;
+		
+	case '6': // Ip V6
+		config.ipv6 = opt.optarg;
 		break;
 		
 	default:
@@ -114,5 +114,11 @@ if (config.verbose) {
 }
 
 syslog = libSyslog.create(config);
+
+syslog.on('error', function(exception) {
+		if (exception.code === "EACCESS") {
+			process.exit(1);
+		}
+});
 
 syslog.start();
