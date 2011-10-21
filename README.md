@@ -40,4 +40,4 @@ Just run test/run_test.js
 
 
 ## License
-node-netasq-comm is licensed under the MIT license.
+node-netasq-log is licensed under the MIT license.

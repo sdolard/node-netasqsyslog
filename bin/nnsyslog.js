@@ -29,16 +29,14 @@ util = require('util'),
 getopt = require('posix-getopt'), // contrib
 libSyslog = require('../lib/syslog'),
 optParser, opt, syslog, 
-config = {
-	directory: __dirname
-};
+config = {};
 
 
 /**
 * Uncaught exception 
 */
 process.on('uncaughtException', function (exception) {
-		if (exception.code === "EACCES") {
+		if (exception.code === "EACCESS") {
 			process.exit(1);
 		}
 		console.error('Process uncaught exception: ', exception.message);
@@ -49,7 +47,7 @@ process.on('uncaughtException', function (exception) {
 * Display help
 */
 function displayHelp() {
-	console.log('nnsyslog –a address -d directory [-p port] [–v] [–h] [-r regex]');
+	console.log('nnsyslog –a address -d directory [-p port] [–v] [–h]');
 	console.log('NETASQ Node Syslog %s', libSyslog.version);
 	console.log('Options:');
 	console.log('  v: enable verbose');
@@ -57,7 +55,6 @@ function displayHelp() {
 	console.log('  a: firewall address');
 	console.log('  d: log directory');
 	console.log('  p: port');
-	console.log('  r: regular expression');
 	console.log('Issues: %s', libSyslog.bugs.web);
 }
 
@@ -85,10 +82,6 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 		
 	case 'p': // port
 		config.port = opt.optarg;
-		break;
-		
-	case 'r': // regular expression
-		config.regGrep = new RegExp(opt.optarg);
 		break;
 		
 	default:

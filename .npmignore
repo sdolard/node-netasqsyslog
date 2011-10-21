@@ -1,7 +1,9 @@
 git_hooks/pre-commit
-node_modules
 examples/*~
 bin/*~
 lib/*~
 test/*~
+log/
 *~
+.gitignore
+.npmignore
