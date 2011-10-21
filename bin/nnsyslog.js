@@ -36,7 +36,7 @@ config = {};
 * Uncaught exception 
 */
 process.on('uncaughtException', function (exception) {
-		if (exception.code === "EACCESS") {
+		if (exception.code === "EACCES") {
 			process.exit(1);
 		}
 		console.error('Process uncaught exception: ', exception.message);
