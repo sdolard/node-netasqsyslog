@@ -31,12 +31,13 @@ libSyslog = require('../lib/syslog'),
 optParser, opt, syslog, 
 config = {};
 
+console.log('node version: %s', process.version);
 
 /**
 * Uncaught exception 
 */
 process.on('uncaughtException', function (exception) {
-		if (exception.code === "EACCES") {
+		if (exception.code === "EACCES" || exception.code === "EACCESS") { // node V4/V5 compat 
 			process.exit(1);
 		}
 		console.error('Process uncaught exception: ', exception.message);
