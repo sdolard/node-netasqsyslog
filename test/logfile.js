@@ -91,7 +91,7 @@ logFile = logfile.create({
 		directory: __dirname,
 		fileName: 'test.txt',
 		writeDelay: 1,
-		verbose: true,
+		//verbose: true,
 		fileMaxSize: 1024 * 1024 * 10
 });
 logFile.on('writting', function(fileName){
