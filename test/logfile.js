@@ -47,10 +47,11 @@ EEMPTYDIRECTORY = false,
 EDIRNOTFOUND = false,
 endEvent = false,
 closeEventUnlink = false,
-elements = 1, // 1,//1000000,
+readStreamErrorEvent = false,
+elements = 1, // 1, 1000000,
 elementsIO = parseInt(elements, 10) + '-elements-io',
 elementsLoop = parseInt(elements, 10) + '-elements-Loop',
-start, end, mem;
+start, end, mem, writtingEventCount = 0;
 
 
 try {
@@ -89,23 +90,29 @@ catch(exceptionBaz) {
 logFile = logfile.create({
 		directory: __dirname,
 		fileName: 'test.txt',
-		writeDelay: 1
-		
+		writeDelay: 1,
+		verbose: true,
+		fileMaxSize: 1024 * 1024 * 10
 });
 logFile.on('writting', function(fileName){
-		if (elements > 1 ) {
+		
+		if (elements > 1 && writtingEventCount === 0) {
 			console.time(elementsIO);
 			start = Date.now();
 		}
+		writtingEventCount ++; 
 });
 
 logFile.on('written', function(fileName){
-		if (size > 1024 * 1024) {
+		var totalSize, duration;
+		if (size > 1024 * 1024 ) {
 			console.timeEnd(elementsIO);
 			end = Date.now();
-			console.log('%dMB/s', size / 1024 / 1024 * 1000 / (end - start));
+			totalSize = size / 1024 / 1024;
+			duration = end - start;
+			console.log('Total:%dMB in %d ms > %dMB/s', totalSize, duration, totalSize * 1000 / duration);
 		}
-		if (!endEvent) {
+		if (elements === 1) {
 			rs = fs.createReadStream(fileName, { 
 					encoding: 'utf8'
 			});
@@ -119,7 +126,8 @@ logFile.on('written', function(fileName){
 					endEvent = true;
 			});
 			rs.on('error', function (exception) { 
-					console.log('ReadStream exception: %s(%s)', exception.message, exception.code);
+					readStreamErrorEvent = true;
+					//console.log('ReadStream exception: %s(%s)', exception.message, exception.code);
 			});
 			rs.on('close', function () { 
 					// Clean up
@@ -133,10 +141,14 @@ logFile.on('written', function(fileName){
 					if (elements === 1) {
 						assert.equal(endData, dataTest);
 					}
-					logFile.write(dataTest); // this should throw an error (file donot exists more), but no.
+					logFile.write(dataTest); // this should throw an error (file do not exists more), but no.
 			});
 		}
 		
+});
+
+logFile.on('renamed', function (oldFilePath, newFilePath) {
+		console.log('%s renamed to %s', oldFilePath, newFilePath);
 });
 
 if (elements > 1 ) {
@@ -161,8 +173,13 @@ process.on('exit', function () {
 		assert.strictEqual(EEMPTYFILENAME, true, 'EEMPTYFILENAME done');
 		assert.strictEqual(EEMPTYDIRECTORY, true, 'EEMPTYDIRECTORY done');
 		assert.strictEqual(EDIRNOTFOUND, true, 'EDIRNOTFOUND done');
-		assert.strictEqual(endEvent, true, 'endEvent done');
-		assert.strictEqual(closeEventUnlink, true, 'closeEventUnlink done');		
+		
+		if (elements === 1) {
+			assert.strictEqual(endEvent, true, 'endEvent done');
+			assert.strictEqual(closeEventUnlink, true, 'closeEventUnlink done');
+			
+			assert.strictEqual(readStreamErrorEvent, true, 'readStreamErrorEvent done');
+		}		
 });
 
 /*
@@ -177,7 +194,7 @@ heapUsed: 156.18316650390625MB
 50.39422950057741MB/s
 
 
-logFile.writeSync
+logFile.writeSync > removed
 -------------
 1000000-elements-Loop: 8220ms
 rss: 456.97265625MB
