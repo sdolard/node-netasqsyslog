@@ -20,14 +20,15 @@
 	},
 	"dependencies": {
 		"pkginfo": "0.2.x",
-		"posix-getopt": "0.0.x"
+		"posix-getopt": "0.0.x",
+		"log-to-file": "0.1.x"
 	},
 	"engines": {
 		"node": ">= 0.4.0"
 	}, 
 	"bugs" :
 	{ 
-		"web" : "https://github.com/sdolard/node-netasq-log/issues"
+		"url" : "https://github.com/sdolard/node-netasq-log/issues"
 	}, 
 	"licenses" : [
 		{ 
