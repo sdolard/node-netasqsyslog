@@ -1,6 +1,6 @@
-# node-netasq-log
+# node-netasqsyslog
 
-This is a NETASQ security appliance log library for node.js.
+A NETASQ security appliances syslog.
 
 * http://www.netasq.com
 * http://nodejs.org
@@ -12,10 +12,10 @@ This is a NETASQ security appliance log library for node.js.
 curl http://npmjs.org/install.sh || sh	
 ```
 
-### Installing netasq-log
+### Installing netasqsyslog
 
 ```
-[sudo] npm install [-g] netasq-log
+[sudo] npm install [-g] netasqsyslog
 ```
 nncli (bin) will be only available with global (-g) option.
 
@@ -40,4 +40,4 @@ Just run test/run_test.js
 
 
 ## License
-node-netasq-log is licensed under the MIT license.
+node-netasqsyslog is licensed under the MIT license.
