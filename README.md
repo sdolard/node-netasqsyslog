@@ -1,30 +1,26 @@
 # node-netasqsyslog
 
-A NETASQ security appliances syslog.
+A NETASQ security appliances syslog. [![Build Status](https://secure.travis-ci.org/sdolard/node-netasqsyslog.png?branch=master)](http://travis-ci.org/sdolard/node-netasqsyslog)
 
 * http://www.netasq.com
 * http://nodejs.org
-
-## Installation with npm > TODO
-### Installing npm (node package manager: http://npmjs.org/)
-
-```
-curl http://npmjs.org/install.sh || sh	
-```
 
 ### Installing netasqsyslog
 
 ```
 [sudo] npm install [-g] netasqsyslog
 ```
-nncli (bin) will be only available with global (-g) option.
+nnsyslog (bin) will be only available with global (-g) option.
 
 
 ## Usage
 ### Basic 
 ```javascript
-                                
-		
+
+syslog = libSyslog.create({
+	directory: '~/log'
+});              
+
 ```
 
 ### Examples
@@ -36,7 +32,7 @@ nncli (bin) will be only available with global (-g) option.
 
 
 ## Test
-Just run test/run_test.js
+Just run "npm test"
 
 
 ## License

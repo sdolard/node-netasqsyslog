@@ -26,8 +26,8 @@ var
 * requirements
 */
 util = require('util'),
+
 getopt = require('posix-getopt'), // contrib
-pkginfo = require('pkginfo')(module), // contrib
 
 libSyslog = require('../lib/syslog'),
 optParser, opt, syslog, 
@@ -96,7 +96,6 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 if(!config.srcAddress) {
 	console.log('WARNING: listening * addresses');
 }
-
 
 if(!config.directory) {
 	console.log('WARNING: data will be only dump to console');
