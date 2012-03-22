@@ -1,7 +1,7 @@
 {
   "name": "netasqsyslog",
   "description": "Syslog for NETASQ security appliances",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Sebastien Dolard <sdolard@gmail.com>",
   "email": "sdolard@gmail.com",
   "keywords": [
@@ -22,12 +22,13 @@
     "test": "vows test/vows*.js --spec"
   },
   "dependencies": {
-    "posix-getopt": "=> 0.0.x",
-    "logtofile": ">= 0.1.x",
-    "vows": ">= 0.6.2"
+    "posix-getopt": ">= 0.0.1",
+    "logtofile": ">= 0.1.0",
+    "vows": ">= 0.6.2",
+    "pkginfo": ">= 0.2.x"
   },
   "engines": {
-    "node": "0.6.x"
+    "node": ">= 0.6.x"
   },
   "bugs": {
     "url": "https://github.com/sdolard/node-netasqsyslog/issues"

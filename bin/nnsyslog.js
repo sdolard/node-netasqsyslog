@@ -27,6 +27,8 @@ var
 */
 util = require('util'),
 getopt = require('posix-getopt'), // contrib
+pkginfo = require('pkginfo')(module), // contrib
+
 libSyslog = require('../lib/syslog'),
 optParser, opt, syslog, 
 config = {};
@@ -52,7 +54,6 @@ function displayHelp() {
 	console.log('  d: log directory');
 	console.log('  p: port');
 	console.log('  6: Ip V6');
-	console.log('Issues: %s', libSyslog.bugs.web);
 }
 
 /**
@@ -93,16 +94,12 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 }
 
 if(!config.srcAddress) {
-	console.log('A firewall address is mandatory!');
-	displayHelp();
-	process.exit(1);
+	console.log('WARNING: listening * addresses');
 }
 
 
 if(!config.directory) {
-	console.log('A directory is mandatory!');
-	displayHelp();
-	process.exit(1);
+	console.log('WARNING: data will be only dump to console');
 }
 
 
@@ -116,10 +113,15 @@ if (config.verbose) {
 syslog = libSyslog.create(config);
 
 syslog.on('error', function(exception) {
-		if (exception.code === "EACCESS") {
+		switch(exception.code) {
+		case 'EACCES':
+		case 'EDIRNOTFOUND':
+			console.log('%s (%s)', exception.message, exception.code);
+			process.exit(1);
+		default:
+			// Manage others if required
 			console.log('%s (%s)', exception.message, exception.code);
 			process.exit(1);
 		}
 });
 
-syslog.start();
