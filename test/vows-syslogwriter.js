@@ -7,7 +7,7 @@ path = require("path"),
 fs = require("fs"),
 syslogwriter = require('../lib/syslogwriter'),
 test1Filename = 'tmp',
-test1FilePath = path.normalize(__dirname + '/l_' +test1Filename),
+test1FilePath = path.normalize(__dirname + '/' + test1Filename + '_2011_286'),
 test1LogData = [
 	'id=firewall time="2011-10-13 13:11:39" fw="fw_ihm" tz=+0200 ',
 	'startime="2011-10-13 13:09:38" pri=5 confid=01 slotlevel=2 ruleid=3 ',
@@ -48,10 +48,27 @@ exports.suite1 = vows.describe('syslog writer test').addBatch({
 			"written data are correcte": function (filename) {
 				assert.strictEqual(fs.readFileSync(test1FilePath, 'utf8'), test1LogData + '\r\n');
 			}
-		}
+		},
+		"day number of 2012-03-23": {
+			topic: function() {
+				var d = new Date(2012, 2, 23);
+				return syslogwriter.dayNumber(new Date(2012, 2, 23));
+			},
+			"is equal to 83": function(dayNumber) {
+				assert.strictEqual(dayNumber, 83);
+			}
+		},
+		"day number of 2012-03-23 23:59:59,999": {
+			topic: function() {
+				return syslogwriter.dayNumber(new Date(2012, 2, 23, 23, 59, 59, 999));
+			},
+			"is equal to 83": function(dayNumber) {
+				assert.strictEqual(dayNumber, 83);
+			}
+		}    
 }).
 addBatch({
-		'Finnaly, we remove l_tmp file': {
+		'Finnaly, we remove tmp_2011_287 file': {
 			topic: function() {
 				fs.unlink(test1FilePath, this.callback);
 			},

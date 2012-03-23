@@ -37,6 +37,9 @@ exports.suite1 = vows.describe('syslog parser test').addBatch({
 			},
 			'data are correct': function (parser, data) {
 				assert.strictEqual(data.data, logData);
+			},
+			'date is correct': function (parser, data) {
+				assert.strictEqual(data.date.toUTCString(), new Date(2011, 9, 13, 13, 11, 39).toUTCString());
 			}
 		},
 		'When parsing empty data': {
