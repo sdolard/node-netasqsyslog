@@ -26,6 +26,9 @@ var
 * requirements
 */
 util = require('util'),
+fs = require('fs'),
+path = require('path'),
+
 
 getopt = require('posix-getopt'), // contrib
 
@@ -45,7 +48,7 @@ process.on('uncaughtException', function (exception) {
 * Display help
 */
 function displayHelp() {
-	console.log('nnsyslog –a address -d directory [-p port] [–v] [–h] [–6]');
+	console.log('nnsyslog –a address -d directory [-p port] [–v] [–h] [–6] [-c configFile]');
 	console.log('NETASQ Node Syslog %s', libSyslog.version);
 	console.log('Options:');
 	console.log('  v: enable verbose');
@@ -54,12 +57,13 @@ function displayHelp() {
 	console.log('  d: log directory');
 	console.log('  p: port');
 	console.log('  6: Ip V6');
+	console.log('  c: config file');
 }
 
 /**
 * Command line options
 */
-optParser = new getopt.BasicParser(':hv6a:p:r:d:', process.argv);
+optParser = new getopt.BasicParser(':hv6a:p:r:d:c:', process.argv);
 while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	switch(opt.option) {
 	case 'v': // verbose
@@ -85,6 +89,11 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	case '6': // Ip V6
 		config.ipv6 = opt.optarg;
 		break;
+
+	case 'c': // config file
+		config.file = path.resolve(opt.optarg);
+		console.log('WARNING: reading config from config file: "%s"', config.file);
+		break;
 		
 	default:
 		console.log('Invalid or incomplete option');
@@ -93,6 +102,13 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	}
 }
 
+// Reading config file
+if (config.file){
+	data = fs.readFileSync(config.file).toString();
+	config = JSON.parse(data);
+	console.log("Read config: \r\n%s", util.inspect(config));
+}
+	
 if(!config.srcAddress) {
 	console.log('WARNING: listening * addresses');
 }

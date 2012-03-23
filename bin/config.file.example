@@ -1,0 +1,7 @@
+{
+	"srcAddress": "10.2.15.254",
+	"verbose": false,
+	"directory": "log",
+	"port": 514,
+	"ipv6": false
+}
