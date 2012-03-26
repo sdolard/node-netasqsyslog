@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 /*
 Copyright © 2011 by Sebastien Dolard (sdolard@gmail.com)
 
@@ -26,23 +26,16 @@ var
 * requirements
 */
 util = require('util'),
-fs = require('fs'),
 path = require('path'),
-
+fs = require('fs'),
 
 getopt = require('posix-getopt'), // contrib
 
 libSyslog = require('../lib/syslog'),
 optParser, opt, syslog, 
-config = {};
-
-/**
-* Uncaught exception 
-*/
-process.on('uncaughtException', function (exception) {
-		console.error('Process uncaught exception: ', exception.message);
-});
-
+config = {},
+logtofile = require('logtofile'), 
+errorLog;
 
 /**
 * Display help
@@ -58,6 +51,7 @@ function displayHelp() {
 	console.log('  p: port');
 	console.log('  6: Ip V6');
 	console.log('  c: config file');
+	
 }
 
 /**
@@ -89,7 +83,7 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	case '6': // Ip V6
 		config.ipv6 = opt.optarg;
 		break;
-
+		
 	case 'c': // config file
 		config.file = path.resolve(opt.optarg);
 		console.log('WARNING: reading config from config file: "%s"', config.file);
@@ -108,15 +102,16 @@ if (config.file){
 	config = JSON.parse(data);
 	console.log("Read config: \r\n%s", util.inspect(config));
 }
-	
+
+
+
 if(!config.srcAddress) {
 	console.log('WARNING: listening * addresses');
 }
 
 if(!config.directory) {
 	console.log('WARNING: data will be only dump to console');
-}
-
+}                                                                                  
 
 /**
 * Verbose mode
@@ -127,16 +122,41 @@ if (config.verbose) {
 
 syslog = libSyslog.create(config);
 
+errorLog = new logtofile.create({
+		directory: config.directory,
+		fileName: 'nnsyslog_error.log'
+});
+
+
 syslog.on('error', function(exception) {
+		
+		console.error('%s (%s)', exception.message, exception.code);
+		debugger;
+		// TODO
+		// errorLog.writeSync(exception.message + '(' + exception.code + ')');
+		
 		switch(exception.code) {
 		case 'EACCES':
 		case 'EDIRNOTFOUND':
-			console.log('%s (%s)', exception.message, exception.code);
 			process.exit(1);
+			break;
+			
+		case 'EEMPTYDATA':
+			// We continue
+			break;
+			
 		default:
-			// Manage others if required
-			console.log('%s (%s)', exception.message, exception.code);
 			process.exit(1);
 		}
+});
+
+
+/**
+* Uncaught exception 
+*/
+process.on('uncaughtException', function (exception) {
+		console.error('Process uncaught exception: %s (%s)', exception.message, exception. code);
+		// TODO
+		//errorLog.writeSync(exception.message + '(' + exception.code + ')');
 });
 
