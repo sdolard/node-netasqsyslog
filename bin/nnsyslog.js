@@ -41,12 +41,12 @@ errorLog;
 * Display help
 */
 function displayHelp() {
-	console.log('nnsyslog –a address -d directory [-p port] [–v] [–h] [–6] [-c configFile]');
+	console.log('nnsyslog –a address,... -d directory [-p port] [–v] [–h] [–6] [-c configFile]');
 	console.log('NETASQ Node Syslog %s', libSyslog.version);
 	console.log('Options:');
 	console.log('  v: enable verbose');
 	console.log('  h: display this help');
-	console.log('  a: firewall address');
+	console.log('  a: firewall address. Can be a list of addresses comma separated');
 	console.log('  d: log directory');
 	console.log('  p: port');
 	console.log('  6: Ip V6');
