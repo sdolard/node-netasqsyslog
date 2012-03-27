@@ -7,7 +7,7 @@ path = require("path"),
 fs = require("fs"),
 syslogwriter = require('../lib/syslogwriter'),
 test1Filename = 'tmp',
-test1FilePath = path.normalize(__dirname + '/' + test1Filename + '_2011_286'),
+test1FilePath = path.normalize(__dirname + '/' + test1Filename + '_2011_286.log'),
 test1LogData = [
 	'id=firewall time="2011-10-13 13:11:39" fw="fw_ihm" tz=+0200 ',
 	'startime="2011-10-13 13:09:38" pri=5 confid=01 slotlevel=2 ruleid=3 ',
@@ -24,7 +24,7 @@ test1Data = [
 ].join(''),
 
 test1Filename2 = 'connection',
-test1FilePath2 = path.normalize(__dirname + '/' + test1Filename2 + '_2012_86'),
+test1FilePath2 = path.normalize(__dirname + '/' + test1Filename2 + '_2012_86.log'),
 test1LogData2 = [
 'id=firewall time="2012-03-26 10:53:21" fw="fwgui" tz=+0200 startime="2012-03-26 10:51:20"',
 ' pri=5 confid=01 slotlevel=0 ruleid=0 srcif="Ethernet1" srcifname="in" ipproto=udp',
